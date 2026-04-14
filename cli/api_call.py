@@ -8,15 +8,15 @@ load_dotenv()
 
 # 2. Logic to convert the "True"/"False" string into a real Boolean
 # This checks if the text is exactly "true" (ignoring case)
-use_vertex = os.getenv("USE_VERTEX", "False").lower() == "true"
+use_vertex = os.getenv("GOOGLE_GENAI_USE_VERTEXAI", "False").lower() == "true"
 
 # 3. Initialize the Client using your env variables
 client_kwargs = {"vertexai": use_vertex}
 
 if use_vertex:
     # Enterprise mode: Needs project and location
-    client_kwargs["project"] = os.getenv("PROJECT_ID")
-    client_kwargs["location"] = os.getenv("LOCATION")
+    client_kwargs["project"] = os.getenv("GOOGLE_CLOUD_PROJECT")
+    client_kwargs["location"] = os.getenv("GOOGLE_CLOUD_LOCATION")
 else:
     # Developer mode: Needs ONLY the API key
     client_kwargs["api_key"] = os.getenv("GOOGLE_API_KEY")
@@ -29,7 +29,7 @@ print(f"--- Successfully connected via: {backend} ---")
 
 # 4. Create a stateful chat session
 # This object will store the history of the conversation automatically.
-chat = client.chats.create(model="gemini-2.0-flash")
+chat = client.chats.create(model="gemini-2.5-flash")
 
 if use_vertex:
     print(f"--- Project ID: {client_kwargs["project"]} | Location: {client_kwargs["location"]} ---")
