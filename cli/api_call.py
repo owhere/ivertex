@@ -29,7 +29,7 @@ print(f"--- Successfully connected via: {backend} ---")
 
 # 4. Create a stateful chat session
 # This object will store the history of the conversation automatically.
-chat = client.chats.create(model="gemini-2.5-flash")
+chat = client.chats.create(model="gemini-2.5-flash-lite")
 
 if use_vertex:
     print(f"--- Project ID: {client_kwargs["project"]} | Location: {client_kwargs["location"]} ---")
@@ -51,7 +51,7 @@ while True:
     try:
         # Send the message to the chat session
         response = chat.send_message(user_input)
-        
+        print(f"--- [DEBUG] Model used: {response.model_version} ---")
         print(f"\nGemini: {response.text}")
 
     except RefreshError:
