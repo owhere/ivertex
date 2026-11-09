@@ -8,7 +8,7 @@ unset GOOGLE_API_KEY
 export GOOGLE_GENAI_USE_VERTEXAI=true
 
 # 3. Point to your specific project and the 'global' region
-export GOOGLE_CLOUD_PROJECT="ox-vgg-wise-research-dev-0"
+export GOOGLE_CLOUD_PROJECT="PROJECT_ID"
 export GOOGLE_CLOUD_LOCATION="global"
 
 # 4. Launch the tool with the 3.1 model

@@ -2,7 +2,7 @@ import vertexai
 from anthropic import AnthropicVertex
 import os
 
-PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "ox-cloud-gemini-dev-0")
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "Your_PROJECT_ID")
 REGION = os.environ.get("GCP_REGION", "global")
 
 # Initialize Vertex AI

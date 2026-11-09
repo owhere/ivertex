@@ -4,18 +4,18 @@ Verify and configure Vertex AI context caching settings.
 
 Examples:
     # 1. Read / verify only
-    python3 check_vertex_cache.py -p ox-cloud-gemini-dev-0 -r us-east1
+    python3 check_vertex_cache.py -p <PROJECT_ID> -r us-east1
 
     # 2. In-Memory: Enabled, Durable: Disabled (ZDR Ephemeral target)
-    python3 check_vertex_cache.py -p ox-cloud-gemini-dev-0 -r us-east1 \
+    python3 check_vertex_cache.py -p <PROJECT_ID> -r us-east1 \
         --in-memory enabled --durable disabled
 
     # 3. Both Enabled (GCP default)
-    python3 check_vertex_cache.py -p ox-cloud-gemini-dev-0 -r us-east1 \
+    python3 check_vertex_cache.py -p <PROJECT_ID> -r us-east1 \
         --in-memory enabled --durable enabled
 
     # 4. Turn off all caching
-    python3 check_vertex_cache.py -p ox-cloud-gemini-dev-0 -r us-east1 \
+    python3 check_vertex_cache.py -p <PROJECT_ID> -r us-east1 \
         --in-memory disabled --durable disabled
 """
 
