@@ -1,6 +1,7 @@
 import os
 import subprocess
 from datetime import datetime
+from google.api_core.client_options import ClientOptions
 from google.cloud import texttospeech
 
 
@@ -24,7 +25,11 @@ def play_audio(file_path: str) -> None:
 
 def main():
     print("Initializing Gemini Text-to-Speech client...")
-    client = texttospeech.TextToSpeechClient()
+
+    client = texttospeech.TextToSpeechClient(
+        client_options=ClientOptions(
+            api_endpoint="eu-texttospeech.googleapis.com"
+    ))
 
     output_dir = "tts_outputs"
     os.makedirs(output_dir, exist_ok=True)
