@@ -1,109 +1,153 @@
-# Gemini Interactive Chat (Python)
+# Using Gemini API via Vertex AI with CLI and SDK
 
-This project provides a simple interactive chat script using Google's **GenAI SDK**.  
-It supports two modes:
+## 1. Enterprise Use
 
-- **Gemini API (Developer Mode)** – using an API key  
-- **Vertex AI (Enterprise Mode)** – using Google Cloud authentication  
+To ensure compliance with data protection requirements and secure access
+control, we have enforced the following policy on Gemini API usage:
 
----
+-   **Vertex AI only**: All Gemini API usage must go through Vertex AI.
+-   **No direct Gemini API keys**: Direct access via public Gemini
+    endpoints is not permitted.
+-   **SSO Enforcement**: Access must be authenticated via organisational
+    SSO (Entra ID / Google Cloud IAM federation).
 
-## Prerequisites
+## 2. Prerequisites
 
-- Python 3.9+
-- pip installed
-- A Google account
+Before using Gemini via Vertex AI, ensure the following:
 
----
+-   **Access to a GCP Project**
+    You must have access to a Google Cloud project.
 
-## Project Setup
+-   **Verify Your Project in the Google Cloud Console**
+    Once your project has been provisioned, confirm access via the
+    Google Cloud Console:  [https://console.cloud.google.com/](https://console.cloud.google.com/)
 
-### 1. Clone the repo
-```bash
-git clone https://github.com/owhere/ivertex.git
-cd ivertex
-```
----
+    -   Sign in using your University SSO account
+        (e.g. `abcd1234@ox.ac.uk`)
+    -   Open the **Project Selector** (top-left, next to the *Google
+        Cloud* logo)
+    -   At **All** tab, navigate through
 
-### 2. Install dependencies
+        `No organisation → Your Group → Development → Your Project`
 
-```bash
-python -m venv env
-source env/bin/activate
-pip install -r requirements.txt
-```
----
+        Please get yourself familar with Project number (12 digits) and Project ID (a connected string prefixed with ox)
 
-### 3. Create a `.env` file or set envs
+    -   Go to **APIs & Services** to review enabled APIs and monitor usage later. The **Agent Platform API** is enabled for you to access Gemini models through Vertex AI APIs.
 
-Create a file named `.env` in your project root . (Local testing)
+-   **Install the gcloud CLI**
 
-```bash
-cp cli/example.env .env
-```
+    Following the official guide:, install the [Google Cloud SDK](https://docs.cloud.google.com/sdk/docs/install-sdk).
 
-#### Option A: Gemini API (Simplest)
 
-```env
-GOOGLE_GENAI_USE_VERTEXAI=False
-GOOGLE_API_KEY=your_api_key_here 
-```
----
+-   **Authenticate and Set Your Project**
 
-#### Option B: Vertex AI (Enterprise, Recommended)
-
-```env
-GOOGLE_GENAI_USE_VERTEXAI=True
-GOOGLE_CLOUD_PROJECT=your_project_id
-GOOGLE_CLOUD_LOCATION=us-central1
-```
-
-Then authenticate:
+    After installation, verify access from your terminal:
 
 ```bash
+gcloud auth login
+gcloud auth login --no-launch-browser # if using a remote host
+```
+
+You then complete the organisational SSO flow from your local browser.
+- When prompted: Google Cloud SDK wants to access your Google Account, allow it.
+- Then you should see: You are now authenticated with the gcloud CLI!
+
+In your terminal, set your project.
+
+``` bash
+gcloud config set project <PROJECT_ID>
+```
+
+This ensures you are authenticated via SSO and working in the correct project.
+
+-   **Validate Access**
+
+Run the following command to confirm you can access the project:
+
+```bash
+gcloud projects describe <PROJECT_ID>
+```
+
+If successful, this will return project metadata. If not, check your permissions or authentication.
+
+## 3. Access via Gemini CLI with ADC
+
+**Application Default Credentials (ADC)** is how the CLI authenticates without needing a service account key file sitting on disk.
+
+### 3.1 Install CLI
+
+Install the Gemini CLI
+
+``` bash
+npm install -g @google/gemini-cli # sudo if needed
+```
+
+### 3.2 Prepare the environment
+
+``` bash
+mkdir -p ~/.gemini
+vim ~/.gemini/.env
+```
+
+In the file setting up those variables
+```bash
+$ cat .env
+export GOOGLE_GENAI_USE_VERTEXAI=true
+export GOOGLE_CLOUD_PROJECT=YOUR-PROJECT-ID
+export GOOGLE_CLOUD_LOCATION=global
+```
+
+### 3.3 Make sure to unset API key
+
+Please unset following keys as they take precedence and prevent ADC from working
+
+``` bash
+unset GOOGLE_API_KEY
+unset GEMINI_API_KEY
+```
+
+### 3.4 Authenticate
+
+``` bash
 gcloud auth application-default login
 ```
+or following if on a remote host
+```bash
+gcloud auth application-default login  --no-launch-browser
+```
 
----
+You then complete the organisational SSO flow from your local browser.
+- When prompted: Google Auth Library wants additional access to your Google Account, select all to allow Google Auth Library access your account, and continue.
+- Then you should see: You are now authenticated with the gcloud CLI!
 
-## How the Script Works
-
-- Reads environment variables from `.env`
-- Determines whether to use:
-  - API key (Gemini API), or
-  - GCP authentication (Vertex AI)
-- Initializes the GenAI client
-- Starts a **stateful chat session**
-- Keeps conversation history automatically
-
----
-
-## Run the Script
+### 3.5 Run gemini
 
 ```bash
-python cli/api_call.py
+source ~/.gemini/.env
+gemini
 ```
----
+use **/auth**, select Vertex AI and use **/model**, select a model. Following models are available at the time of update:
 
-## Usage
+1. gemini-3.1-pro-preview
+2. gemini-3-flash-preview
+3. gemini-3.1-flash-lite-preview
+4. gemini-2.5-pro
+5. gemini-2.5-flash
+6. gemini-2.5-flash-lite
 
-Once running, you’ll see:
+### 3.6 Diagnosis
 
+Sometime, the authentication failed due to caching. Run following to clear the cache
+
+```bash
+gcloud auth application-default revoke
 ```
---- Successfully connected via: Vertex AI ---
---- Project ID: your_project_id | Location: us-central1 ---
-Gemini Interactive Chat (Type 'exit' or 'quit' to stop)
+or
+```
+rm ~/.config/gcloud/application_default_credentials.json
 ```
 
-Example:
+## 4. Access via Python SDK
 
-```
-You: Hello
-Gemini: Hi! How can I help you today?
-```
+Please follow [Google Introduction to the Agent Platform SDK for Python](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/python-sdk/use-vertex-ai-python-sdk-ref) for SDK access.
 
-To exit:
-
-```
-exit
-```
