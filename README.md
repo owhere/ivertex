@@ -48,10 +48,9 @@ cp cli/example.env .env
 GOOGLE_GENAI_USE_VERTEXAI=False
 GOOGLE_API_KEY=your_api_key_here 
 ```
-Get your API key from Google AI Studio.
 ---
 
-#### Option B: Vertex AI (Enterprise / GCP)
+#### Option B: Vertex AI (Enterprise, Recommended)
 
 ```env
 GOOGLE_GENAI_USE_VERTEXAI=True
